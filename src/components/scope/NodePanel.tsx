@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect } from "react";
 import { EcosystemNode, CATEGORY_CONFIG, EDGES, NODES } from "@/lib/ecosystem-data";
 import { useScopeStore } from "@/store/scope-store";
 import { X, ExternalLink, ShieldCheck, TrendingUp, Layers, Flame, Globe, Bot, Zap } from "lucide-react";
@@ -13,6 +14,12 @@ interface NodePanelProps {
 export function NodePanel({ node, onClose }: NodePanelProps) {
   const { selectNode } = useScopeStore();
   const cfg = CATEGORY_CONFIG[node.category];
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [onClose]);
   const dimColor = cfg.color + "18";
 
   // Find connected protocols

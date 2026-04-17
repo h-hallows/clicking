@@ -311,6 +311,13 @@ export function WalletConnectButton({ className, variant = "default" }: WalletCo
 
   useEffect(() => { setMounted(true); }, []);
 
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [open]);
+
   const modal = mounted ? createPortal(
     open ? <ModalContent onClose={() => setOpen(false)} /> : null,
     document.body
