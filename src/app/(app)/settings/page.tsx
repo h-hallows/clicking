@@ -358,8 +358,8 @@ export default function SettingsPage() {
 
           {/* App Version */}
           <div className="text-center pb-4">
-            <p className="text-[10px] text-[#484f58]">
-              Clicking Suite v1.1 · April 2026
+            <p className="text-[10px] text-[#484f58]" suppressHydrationWarning>
+              Clicking Suite v1.1 · {new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" })}
             </p>
           </div>
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { MARKET_MOVERS, formatTVL } from "@/lib/dashboard-data";
@@ -9,11 +9,14 @@ import { TrendingUp, TrendingDown, Flame, Activity, Bot } from "lucide-react";
 export function MarketMovers() {
   const [items, setItems] = useState(MARKET_MOVERS);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const mountedRef = useRef(true);
 
   // Simulate live market movement every 8s
   useEffect(() => {
+    mountedRef.current = true;
     setLastUpdated(new Date());
     const interval = setInterval(() => {
+      if (!mountedRef.current) return;
       setItems((prev) =>
         prev.map((item) => ({
           ...item,
@@ -24,7 +27,7 @@ export function MarketMovers() {
       );
       setLastUpdated(new Date());
     }, 8000);
-    return () => clearInterval(interval);
+    return () => { mountedRef.current = false; clearInterval(interval); };
   }, []);
 
   const gainers = [...items].filter((m) => m.tvlChange7d > 0).sort((a, b) => b.tvlChange7d - a.tvlChange7d);
