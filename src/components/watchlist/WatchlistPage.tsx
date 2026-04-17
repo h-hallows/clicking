@@ -233,6 +233,12 @@ const HEAT_LEVELS: Array<"RISING" | "HOT" | "EXPLODING"> = ["RISING", "HOT", "EX
 function AddAlertModal({ onClose, onSave }: { onClose: () => void; onSave: (a: Alert) => void }) {
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [selectedType, setSelectedType] = useState<Alert["type"] | null>(null);
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [onClose]);
   const [token, setToken] = useState("");
   const [narrativeId, setNarrativeId] = useState("ai");
   const [threshold, setThreshold] = useState("");

@@ -75,6 +75,12 @@ function AddPositionModal({ onClose, onAdd }: AddPositionModalProps) {
   const [stop, setStop] = useState("");
   const [narrativeId, setNarrativeId] = useState("rwa");
 
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [onClose]);
+
   const cryptoNarratives = Object.values(NARRATIVE_MAP).filter(
     (n) => !n.domain || n.domain === "crypto" || n.domain === "both"
   );

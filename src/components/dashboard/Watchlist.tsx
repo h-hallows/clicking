@@ -74,6 +74,12 @@ const SPARKLINES = WATCHLIST.reduce<Record<string, number[]>>((acc, item, i) => 
 
 function AddProtocolModal({ onClose, onAdd }: { onClose: () => void; onAdd: (name: string, color: string) => void }) {
   const [q, setQ] = useState("");
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [onClose]);
   const filtered = NODES.filter((n) =>
     n.label.toLowerCase().includes(q.toLowerCase()) ||
     n.category.toLowerCase().includes(q.toLowerCase())
