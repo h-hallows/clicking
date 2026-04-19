@@ -38,7 +38,7 @@ export function NodePanel({ node, onClose, side = "right" }: NodePanelProps) {
 
   return (
     <div
-      className={`absolute top-4 rounded-xl border overflow-hidden shadow-2xl z-20 backdrop-blur-md ${side === "right" ? "right-4" : "left-4"}`}
+      className="rounded-xl border overflow-hidden shadow-2xl backdrop-blur-md"
       style={{
         borderColor: cfg.color + "35",
         background: "rgba(8, 7, 20, 0.92)",

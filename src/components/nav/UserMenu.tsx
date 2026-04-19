@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { LogOut, Settings, User, ChevronDown } from "lucide-react";
+import { LogOut, Settings, User, ChevronDown, UserPlus } from "lucide-react";
 import { useAuthStore } from "@/store/auth-store";
 import Link from "next/link";
 
@@ -87,6 +87,21 @@ export function UserMenu() {
                 </div>
               </div>
             </div>
+
+            {/* Guest upgrade banner */}
+            {user.id.startsWith("guest_") && (
+              <div className="px-3.5 py-2.5 border-b border-[#21262d]">
+                <Link
+                  href="/login?mode=signup"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-[11px] font-bold transition-all"
+                  style={{ background: "#7c6af718", color: "#a78bfa", border: "1px solid #7c6af730" }}
+                >
+                  <UserPlus size={11} />
+                  Create free account — save your data
+                </Link>
+              </div>
+            )}
 
             {/* Menu items */}
             <div className="py-1">

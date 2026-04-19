@@ -270,24 +270,38 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
       </div>
 
       {/* User / Sign in */}
-      <div className="px-3 pb-4">
+      <div className="px-3 pb-4 space-y-2">
         {user ? (
-          <Link
-            href="/dashboard"
-            className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg border border-[#21262d] hover:border-[#30363d] hover:bg-[#161b22] transition-all duration-[80ms] group"
-          >
-            <div
-              className="w-6 h-6 rounded-md flex items-center justify-center text-[9px] font-black text-white flex-shrink-0"
-              style={{ backgroundColor: avatarColor }}
+          <>
+            <Link
+              href="/dashboard"
+              className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg border border-[#21262d] hover:border-[#30363d] hover:bg-[#161b22] transition-all duration-[80ms] group"
             >
-              {initials}
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-[11px] font-bold text-[#8b949e] group-hover:text-[#e6edf3] transition-colors truncate">{user.name}</p>
-              <p className="text-[9px] text-[#484f58] truncate">{user.email}</p>
-            </div>
-            <User size={11} className="text-[#484f58] flex-shrink-0" />
-          </Link>
+              <div
+                className="w-6 h-6 rounded-md flex items-center justify-center text-[9px] font-black text-white flex-shrink-0"
+                style={{ backgroundColor: avatarColor }}
+              >
+                {initials}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[11px] font-bold text-[#8b949e] group-hover:text-[#e6edf3] transition-colors truncate">{user.name}</p>
+                <p className="text-[9px] text-[#484f58] truncate">{user.email}</p>
+              </div>
+              <User size={11} className="text-[#484f58] flex-shrink-0" />
+            </Link>
+            {/* Guest upgrade prompt */}
+            {user.id.startsWith("guest_") && (
+              <Link
+                href="/login?mode=signup"
+                onClick={onClose}
+                className="w-full flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-bold transition-all duration-[80ms]"
+                style={{ background: "#7c6af710", color: "#a78bfa", border: "1px solid #7c6af730" }}
+              >
+                <LogIn size={10} />
+                Create free account to save progress
+              </Link>
+            )}
+          </>
         ) : (
           <Link
             href="/login"

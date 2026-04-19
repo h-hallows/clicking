@@ -7,6 +7,7 @@ import {
 } from "@/lib/ecosystem-data";
 import { useScopeStore } from "@/store/scope-store";
 import { NodePanel } from "./NodePanel";
+import { AnimatePresence, motion } from "framer-motion";
 import { ZoomIn, ZoomOut, Maximize2, Search } from "lucide-react";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -473,7 +474,8 @@ function render(
   ctx.restore();
 
   // ── Hover tooltip (screen-space) ─────────────────────────────────────────────
-  if (hoveredId && !selectedId) {
+  // Show tooltip on hover even when a node is selected, as long as it's a different node
+  if (hoveredId && hoveredId !== selectedId) {
     const node = nodes.find((n) => n.id === hoveredId);
     if (node && visibleIds.has(node.id)) {
       const sx = node.x * scale + tx;
@@ -1043,10 +1045,22 @@ export function ScopeMap() {
         </div>
       )}
 
-      {/* Node panel */}
-      {selectedNodeData && (
-        <NodePanel node={selectedNodeData} onClose={() => selectNode(null)} side={panelSide} />
-      )}
+      {/* Node panel — animated */}
+      <AnimatePresence mode="wait">
+        {selectedNodeData && (
+          <motion.div
+            key={selectedNodeData.id}
+            initial={{ opacity: 0, scale: 0.96, y: -8 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.96, y: -8 }}
+            transition={{ duration: 0.15, ease: "easeOut" }}
+            className="absolute top-4 z-20"
+            style={panelSide === "right" ? { right: "1rem" } : { left: "1rem" }}
+          >
+            <NodePanel node={selectedNodeData} onClose={() => selectNode(null)} side={panelSide} />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
