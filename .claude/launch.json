@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "Clicking Dev Server",
+      "runtimeExecutable": "/bin/sh",
+      "runtimeArgs": ["-c", "export PATH=/usr/local/bin:$PATH && cd /Users/h/Desktop/Clicking && PORT=$PORT /usr/local/bin/node node_modules/.bin/next dev"],
+      "autoPort": true
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import {
   NARRATIVES, SEED_SIGNALS, LIVE_SIGNAL_POOL, HEAT_COLORS,
   Signal, Narrative,
@@ -836,12 +836,24 @@ function AtlasInsightCard({ insight, onDismiss }: { insight: string; onDismiss: 
 
 function SignalFeedInner() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const [signals, setSignals] = useState<Signal[]>(SEED_SIGNALS);
   const [prices, setPrices] = useState<PriceData[]>([]);
   const [activeNarrative, setActiveNarrative] = useState<string | null>(() => searchParams.get("narrative"));
   const [myNarrativesActive, setMyNarrativesActive] = useState(false);
   const [watched, setWatched] = useState<string[]>([]);
-  const [feedDomain, setFeedDomain] = useState<"crypto" | "ai" | "both">("both");
+  const rawDomain = searchParams.get("domain");
+  const [feedDomain, setFeedDomainState] = useState<"crypto" | "ai" | "both">(
+    rawDomain === "crypto" || rawDomain === "ai" ? rawDomain : "both"
+  );
+
+  const setFeedDomain = useCallback((d: "crypto" | "ai" | "both") => {
+    setFeedDomainState(d);
+    const params = new URLSearchParams(searchParams.toString());
+    if (d === "both") params.delete("domain");
+    else params.set("domain", d);
+    router.replace(`?${params.toString()}`, { scroll: false });
+  }, [router, searchParams]);
   const [newIds, setNewIds] = useState<Set<string>>(new Set());
   const [pendingCount, setPendingCount] = useState(0);
   const [pendingSignals, setPendingSignals] = useState<Signal[]>([]);

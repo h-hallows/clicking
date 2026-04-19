@@ -338,9 +338,13 @@ function render(
     ctx.globalAlpha = nodeAlpha;
 
     // ── Outer glow aura ─────────────────────────────────────────────────────
-    const auraR = pr * (isSelected ? 3.5 : isHovered ? 2.8 : 2.0);
+    // In 1H mode (timeModifier=0.4): boost hot nodes, fade quiet ones
+    const is1H = timeModifier < 0.5;
+    const hotBoost = is1H && node.isHot ? 3.5 : 1;
+    const quietFade = is1H && !node.isHot ? 0.25 : 1;
+    const auraR = pr * (isSelected ? 3.5 : isHovered ? 2.8 : (is1H && node.isHot ? 2.8 : 2.0));
     const aura = ctx.createRadialGradient(node.x, node.y, pr * 0.4, node.x, node.y, auraR);
-    const auraBase = isSelected ? 0.18 : isHovered ? 0.12 : 0.06 * timeModifier;
+    const auraBase = isSelected ? 0.18 : isHovered ? 0.12 : 0.06 * timeModifier * hotBoost * quietFade;
     aura.addColorStop(0, colorWithAlpha(cfg.color, auraBase));
     aura.addColorStop(1, colorWithAlpha(cfg.color, 0));
     ctx.fillStyle = aura;
@@ -349,16 +353,19 @@ function render(
     ctx.fill();
 
     // ── Hot pulse rings ─────────────────────────────────────────────────────
+    // In 1H mode, all hot nodes pulse harder and with more rings
     if (node.isHot && !isSelected && nodeAlpha > 0.5) {
-      for (let ring = 0; ring < 2; ring++) {
-        const phase = (t * 0.025 + ring * 0.5) % 1;
-        const ringR = pr + 4 + phase * 12;
-        const ringAlpha = (1 - phase) * 0.3;
+      const ringCount = is1H ? 3 : 2;
+      const speed = is1H ? 0.035 : 0.025;
+      for (let ring = 0; ring < ringCount; ring++) {
+        const phase = (t * speed + ring * (1 / ringCount)) % 1;
+        const ringR = pr + 4 + phase * (is1H ? 18 : 12);
+        const ringAlpha = (1 - phase) * (is1H ? 0.45 : 0.3);
         ctx.globalAlpha = nodeAlpha * ringAlpha;
         ctx.beginPath();
         ctx.arc(node.x, node.y, ringR, 0, Math.PI * 2);
         ctx.strokeStyle = cfg.color;
-        ctx.lineWidth = 1.2 / scale;
+        ctx.lineWidth = (is1H ? 1.6 : 1.2) / scale;
         ctx.stroke();
       }
       ctx.globalAlpha = nodeAlpha;
@@ -591,6 +598,15 @@ export function ScopeMap() {
   useEffect(() => {
     stateRef.current = { activeCategories, activeChain, selectedNode, searchQuery, timeModifier };
   }, [activeCategories, activeChain, selectedNode, searchQuery, timeModifier]);
+
+  // Deselect node if its category gets filtered out
+  useEffect(() => {
+    if (!selectedNode) return;
+    const nodeData = NODES.find((n) => n.id === selectedNode);
+    if (nodeData && !activeCategories.includes(nodeData.category)) {
+      selectNode(null);
+    }
+  }, [activeCategories, selectedNode, selectNode]);
 
   // Smooth camera to node on selection change
   useEffect(() => {

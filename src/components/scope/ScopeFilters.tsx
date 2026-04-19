@@ -1,22 +1,10 @@
 "use client";
 
-import { useRef, useEffect, Suspense, useCallback } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRef, useEffect, useCallback } from "react";
 import { CATEGORY_CONFIG, CHAINS_LIST, NodeCategory, NODES } from "@/lib/ecosystem-data";
 import { useScopeStore } from "@/store/scope-store";
 import { Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-// Reads ?highlight= param and seeds the search filter
-function HighlightParamReader() {
-  const searchParams = useSearchParams();
-  const setSearch = useScopeStore((s) => s.setSearch);
-  useEffect(() => {
-    const h = searchParams.get("highlight");
-    if (h) setSearch(h);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-  return null;
-}
 
 const categories = Object.entries(CATEGORY_CONFIG) as [
   NodeCategory,
@@ -61,29 +49,36 @@ export function ScopeFilters() {
 
   return (
     <aside className="w-[210px] flex-shrink-0 border-r overflow-y-auto flex flex-col" style={{ borderColor: "#21262d", background: "#0d0e12" }}>
-      <Suspense fallback={null}><HighlightParamReader /></Suspense>
       {/* Time filter */}
-      <div className="flex items-center justify-between px-3 pt-3 pb-2">
-        <span className="text-[9px] font-bold uppercase tracking-widest text-[#484f58]">Window</span>
-        <div className="flex items-center gap-0.5">
-          {TIME_FILTERS.map((tf) => {
-            const isActive = timeFilter === tf;
-            return (
-              <button
-                key={tf}
-                onClick={() => setTimeFilter(tf)}
-                className={cn(
-                  "px-2.5 py-1 text-[10px] font-black rounded-md transition-all",
-                  isActive
-                    ? "bg-[#00DCC820] text-[#00DCC8]"
-                    : "text-[#484f58] hover:text-[#6e7681]"
-                )}
-              >
-                {tf}
-              </button>
-            );
-          })}
+      <div className="px-3 pt-3 pb-2">
+        <div className="flex items-center justify-between mb-1.5">
+          <span className="text-[9px] font-bold uppercase tracking-widest text-[#484f58]">Activity Window</span>
+          <div className="flex items-center gap-0.5">
+            {TIME_FILTERS.map((tf) => {
+              const isActive = timeFilter === tf;
+              return (
+                <button
+                  key={tf}
+                  onClick={() => setTimeFilter(tf)}
+                  className={cn(
+                    "px-2.5 py-1 text-[10px] font-black rounded-md transition-all",
+                    isActive
+                      ? "bg-[#00DCC820] text-[#00DCC8]"
+                      : "text-[#484f58] hover:text-[#6e7681]"
+                  )}
+                >
+                  {tf}
+                </button>
+              );
+            })}
+          </div>
         </div>
+        <p className="text-[9px] text-[#30363d]">
+          {timeFilter === "1H" && "Hot nodes highlighted · recent signals"}
+          {timeFilter === "24H" && "Default view · 24h TVL activity"}
+          {timeFilter === "7D" && "Weekly momentum · broader context"}
+          {timeFilter === "30D" && "Monthly trends · macro narrative flow"}
+        </p>
       </div>
 
       {/* Search */}
