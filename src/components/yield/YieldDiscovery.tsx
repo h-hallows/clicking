@@ -461,6 +461,7 @@ function YieldDiscoveryInner() {
   const [chain, setChain] = useState("all");
   const [search, setSearch] = useState(() => searchParams.get("search") ?? "");
   const [sort, setSort] = useState(() => searchParams.get("sort") ?? "tvl");
+  const [visibleCount, setVisibleCount] = useState(60);
 
   // Track mount state for async fetch safety
   useEffect(() => {
@@ -487,7 +488,10 @@ function YieldDiscoveryInner() {
     return () => clearInterval(iv);
   }, []);
 
-  // Filter + sort
+  // Reset visible count when filters change
+  useEffect(() => { setVisibleCount(60); }, [category, chain, search, sort]);
+
+  // Filter + sort (no hard cap — pagination handles it)
   const filtered = useMemo(() => {
     let list = [...pools];
     if (category !== "all") list = list.filter((p) => p.category === category);
@@ -501,8 +505,11 @@ function YieldDiscoveryInner() {
     if (sort === "apy") list.sort((a, b) => b.apy - a.apy);
     else if (sort === "trending") list.sort((a, b) => (b.trending ? 1 : 0) - (a.trending ? 1 : 0) || b.apy - a.apy);
     else list.sort((a, b) => b.tvl - a.tvl);
-    return list.slice(0, 120);
+    return list;
   }, [pools, category, chain, search, sort]);
+
+  const displayed = filtered.slice(0, visibleCount);
+  const hasMore = visibleCount < filtered.length;
 
   const topPools = useMemo(
     () => [...pools].sort((a, b) => b.tvl - a.tvl).slice(0, 3),
@@ -553,7 +560,7 @@ function YieldDiscoveryInner() {
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3 gap-3">
               {loading
                 ? Array.from({ length: 12 }).map((_, i) => <PoolSkeleton key={i} />)
-                : filtered.map((pool) => (
+                : displayed.map((pool) => (
                     <PoolCard key={pool.id} pool={pool} onAskAtlas={handleAskAtlas} />
                   ))}
             </div>
@@ -566,6 +573,22 @@ function YieldDiscoveryInner() {
                   className="mt-3 text-[11px] text-[#fbbf24] hover:underline"
                 >
                   Clear filters
+                </button>
+              </div>
+            )}
+
+            {/* Load more */}
+            {!loading && hasMore && (
+              <div className="flex items-center justify-center gap-3 mt-6">
+                <span className="text-[11px] text-[#484f58]">
+                  Showing {displayed.length} of {filtered.length} pools
+                </span>
+                <button
+                  onClick={() => setVisibleCount((v) => v + 60)}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg text-[11px] font-bold transition-all hover:opacity-90"
+                  style={{ background: "#fbbf2418", color: "#fbbf24", border: "1px solid #fbbf2430" }}
+                >
+                  Load 60 more
                 </button>
               </div>
             )}
