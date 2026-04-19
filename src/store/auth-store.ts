@@ -17,6 +17,7 @@ interface AuthState {
   signInWithGoogle: () => Promise<void>;
   signInWithApple: () => Promise<void>;
   signUp: (name: string, email: string, password: string) => Promise<void>;
+  signInAsGuest: () => void;
   signOut: () => void;
 }
 
@@ -84,6 +85,18 @@ export const useAuthStore = create<AuthState>()(
             id: `user_${Date.now()}`,
             name,
             email,
+            provider: "email",
+            joinedAt: new Date().toISOString(),
+          },
+        });
+      },
+
+      signInAsGuest: () => {
+        set({
+          user: {
+            id: `guest_${Date.now()}`,
+            name: "Guest",
+            email: "guest@clicking.app",
             provider: "email",
             joinedAt: new Date().toISOString(),
           },

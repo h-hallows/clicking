@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import {
   Radio, Globe, Bot, Zap, LayoutDashboard,
@@ -289,8 +290,14 @@ function FeatureCard({ f, i }: { f: typeof FEATURES[0]; i: number }) {
 
 // ─── Page ────────────────────────────────────────────────────────────
 export default function HomePage() {
+  const router = useRouter();
   const [prices, setPrices] = useState<PriceTick[]>([]);
-  const { user } = useAuthStore();
+  const { user, signInAsGuest } = useAuthStore();
+
+  const handleBrowseAsGuest = () => {
+    signInAsGuest();
+    router.push("/feed");
+  };
 
   useEffect(() => {
     fetch("/api/prices")
@@ -459,14 +466,14 @@ export default function HomePage() {
                 transition={{ delay: 0.26, duration: 0.4 }}
                 className="flex items-center gap-3 flex-wrap"
               >
-                <Link
-                  href="/feed"
+                <button
+                  onClick={handleBrowseAsGuest}
                   className="flex items-center gap-2 px-6 py-3 rounded-xl text-[14px] font-bold text-white transition-all duration-150 hover:scale-[1.02] hover:shadow-[0_0_32px_rgba(124,106,247,0.35)] active:scale-[0.98]"
                   style={{ background: "linear-gradient(135deg, #7c6af7, #6a5ae0)" }}
                 >
                   Explore The Feed
                   <ArrowRight size={14} />
-                </Link>
+                </button>
                 <Link
                   href="/atlas"
                   className="flex items-center gap-2 px-5 py-3 rounded-xl text-[13px] font-semibold border border-[#30363d] text-[#8b949e] hover:text-[#e6edf3] hover:border-[#484f58] hover:bg-[#161b22] transition-all duration-[80ms]"
@@ -653,19 +660,19 @@ export default function HomePage() {
             </p>
             <div className="flex items-center justify-center gap-3 flex-wrap">
               <Link
-                href="/login"
+                href="/login?mode=signup"
                 className="flex items-center gap-2 px-7 py-3 rounded-xl text-[14px] font-bold text-white transition-all duration-150 hover:opacity-90 hover:scale-[1.02]"
                 style={{ background: "linear-gradient(135deg, #7c6af7, #00d2e6)" }}
               >
                 Create Free Account
                 <ChevronRight size={15} />
               </Link>
-              <Link
-                href="/feed"
+              <button
+                onClick={handleBrowseAsGuest}
                 className="flex items-center gap-2 px-5 py-3 rounded-xl text-[13px] font-semibold border border-[#30363d] text-[#8b949e] hover:text-[#e6edf3] hover:border-[#484f58] hover:bg-[#161b22] transition-all duration-[80ms]"
               >
                 Browse without account
-              </Link>
+              </button>
             </div>
           </motion.div>
         </div>
@@ -674,7 +681,7 @@ export default function HomePage() {
       {/* ── FOOTER ── */}
       <footer className="border-t border-[#21262d] px-6 py-4">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
-          <span className="text-[10px] text-[#484f58]">© {new Date().getFullYear()} Clicking. Not financial advice. Always DYOR.</span>
+          <span className="text-[10px] text-[#484f58]" suppressHydrationWarning>© {new Date().getFullYear()} Clicking. Not financial advice. Always DYOR.</span>
           <div className="flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-[#3fb950] animate-pulse" />
             <span className="text-[9px] text-[#3fb950] font-bold tracking-wider">ALL SYSTEMS LIVE</span>

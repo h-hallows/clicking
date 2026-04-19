@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { TrendingUp, ArrowRight } from "lucide-react";
 import { GlossaryTooltip } from "@/components/ui/GlossaryTooltip";
 
@@ -21,13 +21,6 @@ function fmtFull(n: number) {
 export function YieldPhase0() {
   const [amount, setAmount] = useState(5000);
   const [inputVal, setInputVal] = useState("5000");
-  const [showWaitlist, setShowWaitlist] = useState(false);
-  const [email, setEmail] = useState("");
-  const [submitted, setSubmitted] = useState(false);
-
-  useEffect(() => {
-    setSubmitted(!!localStorage.getItem("yield_waitlist_email"));
-  }, []);
 
   const cryptoYearlyEarnings  = (amount * APY_SAFE) / 100;
   const bankYearlyEarnings    = (amount * APY_BANK) / 100;
@@ -39,12 +32,6 @@ export function YieldPhase0() {
     const n = parseFloat(val.replace(/[^0-9.]/g, ""));
     if (!isNaN(n) && n >= 0) setAmount(n);
   }, []);
-
-  function submitEmail(e: React.FormEvent) {
-    e.preventDefault();
-    localStorage.setItem("yield_waitlist_email", email);
-    setSubmitted(true);
-  }
 
   return (
     <div className="rounded-2xl overflow-hidden" style={{ background: "#161b22", border: "1px solid #21262d" }}>
@@ -146,43 +133,13 @@ export function YieldPhase0() {
           </div>
 
           {/* CTA */}
-          {!showWaitlist ? (
-            <button
-              onClick={() => setShowWaitlist(true)}
-              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-black uppercase tracking-widest transition-all hover:opacity-90"
-              style={{ background: "#00DCC8", color: "#0d0e12" }}
-            >
-              Get started with Yield <ArrowRight size={14} />
-            </button>
-          ) : submitted ? (
-            <div
-              className="w-full py-2.5 rounded-xl text-sm font-black text-center"
-              style={{ background: "#00DCC820", color: "#00DCC8", border: "1px solid #00DCC840", animation: "fadeIn 0.3s ease" }}
-            >
-              ✓ You're on the list — launching Q3 2026
-            </div>
-          ) : (
-            <form
-              onSubmit={submitEmail}
-              className="flex gap-2"
-              style={{ animation: "fadeIn 0.25s ease" }}
-            >
-              <input
-                type="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                placeholder="your@email.com"
-                className="flex-1 px-3 py-2.5 rounded-xl text-sm text-[#e6edf3] outline-none"
-                style={{ background: "#0d0e12", border: "1px solid #30363d" }}
-                autoFocus
-                required
-              />
-              <button type="submit" className="px-4 py-2.5 rounded-xl text-sm font-black transition-all hover:opacity-90"
-                style={{ background: "#00DCC8", color: "#0d0e12" }}>
-                Join
-              </button>
-            </form>
-          )}
+          <button
+            onClick={() => document.getElementById("yield-pool-browser")?.scrollIntoView({ behavior: "smooth" })}
+            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-black uppercase tracking-widest transition-all hover:opacity-90"
+            style={{ background: "#00DCC8", color: "#0d0e12" }}
+          >
+            Browse live yield pools <ArrowRight size={14} />
+          </button>
         </div>
       </div>
     </div>

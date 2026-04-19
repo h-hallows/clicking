@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Eye, EyeOff, ArrowRight, Radio, Globe, Bot, Zap, LayoutDashboard, ArrowLeft } from "lucide-react";
@@ -16,11 +16,14 @@ const FEATURES = [
   { icon: LayoutDashboard, color: "#00d2e6", label: "Portfolio",    desc: "Health score + narrative alignment"      },
 ];
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { signIn, signInWithGoogle, signInWithApple, signUp, user, loading } = useAuthStore();
 
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const [mode, setMode] = useState<"signin" | "signup">(
+    searchParams.get("mode") === "signup" ? "signup" : "signin"
+  );
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
@@ -275,7 +278,7 @@ export default function LoginPage() {
             {mode === "signin" && (
               <div className="text-right">
                 {forgotSent ? (
-                  <span className="text-[11px] text-[#3fb950]">Reset link sent — check your inbox.</span>
+                  <span className="text-[11px] text-[#8b949e]">Password reset coming soon — for now, try signing in with Google.</span>
                 ) : (
                   <button
                     type="button"
@@ -332,5 +335,13 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen" style={{ background: "#0d0e12" }} />}>
+      <LoginContent />
+    </Suspense>
   );
 }

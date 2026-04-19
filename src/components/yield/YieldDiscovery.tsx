@@ -19,7 +19,7 @@ function formatTVL(n: number): string {
 }
 
 function apyColor(apy: number): string {
-  if (apy >= 30) return "#FF3D57";
+  if (apy >= 30) return "#E879F9"; // magenta — high APY, distinct from red HIGH RISK badge
   if (apy >= 15) return "#F5A623";
   if (apy >= 8)  return "#fbbf24";
   if (apy >= 3)  return "#27C96A";
@@ -572,7 +572,7 @@ function YieldDiscoveryInner() {
 
             {/* Footer */}
             <div className="flex items-center justify-between mt-6 pt-4 border-t border-white/[0.04]">
-              <p className="text-[10px] text-[#1e1e2e]">
+              <p className="text-[10px] text-[#484f58]">
                 Data via DeFiLlama · Updated every 90s
               </p>
               <button

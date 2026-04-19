@@ -33,18 +33,18 @@ const SYMBOLS: Record<string, string> = {
   uniswap:       "UNI",
 };
 
-// Fallback prices (used if CoinGecko is unavailable)
+// Fallback prices (used if CoinGecko is unavailable) — approximate 2026 levels
 const FALLBACK: PriceData[] = [
-  { id: "bitcoin",        symbol: "BTC",  price: 68420,  change24h:  1.8  },
-  { id: "ethereum",       symbol: "ETH",  price: 3241,   change24h:  2.4  },
-  { id: "solana",         symbol: "SOL",  price: 148,    change24h: -0.9  },
-  { id: "bittensor",      symbol: "TAO",  price: 424,    change24h:  4.2  },
-  { id: "render-token",   symbol: "RNDR", price: 8.24,   change24h:  3.1  },
-  { id: "ondo-finance",   symbol: "ONDO", price: 1.38,   change24h:  5.6  },
-  { id: "hyperliquid",    symbol: "HYPE", price: 14.72,  change24h:  7.3  },
-  { id: "ripple",         symbol: "XRP",  price: 0.614,  change24h:  1.2  },
-  { id: "chainlink",      symbol: "LINK", price: 14.80,  change24h:  2.8  },
-  { id: "uniswap",        symbol: "UNI",  price: 9.42,   change24h: -1.4  },
+  { id: "bitcoin",        symbol: "BTC",  price: 95000,  change24h:  1.8  },
+  { id: "ethereum",       symbol: "ETH",  price: 3800,   change24h:  2.4  },
+  { id: "solana",         symbol: "SOL",  price: 185,    change24h: -0.9  },
+  { id: "bittensor",      symbol: "TAO",  price: 380,    change24h:  4.2  },
+  { id: "render-token",   symbol: "RNDR", price: 6.80,   change24h:  3.1  },
+  { id: "ondo-finance",   symbol: "ONDO", price: 1.10,   change24h:  5.6  },
+  { id: "hyperliquid",    symbol: "HYPE", price: 22.50,  change24h:  7.3  },
+  { id: "ripple",         symbol: "XRP",  price: 2.40,   change24h:  1.2  },
+  { id: "chainlink",      symbol: "LINK", price: 18.50,  change24h:  2.8  },
+  { id: "uniswap",        symbol: "UNI",  price: 8.90,   change24h: -1.4  },
 ];
 
 let _cache: { prices: PriceData[]; fetchedAt: number } | null = null;

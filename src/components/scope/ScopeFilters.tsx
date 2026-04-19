@@ -31,6 +31,14 @@ const catCounts = Object.fromEntries(
   ])
 );
 
+// Compute total TVL from node data
+function formatTotalTVL(totalM: number): string {
+  if (totalM >= 1000) return `$${(totalM / 1000).toFixed(0)}B+`;
+  return `$${totalM.toFixed(0)}M+`;
+}
+const totalTVLMillion = NODES.reduce((sum, n) => sum + (n.tvlNum ?? 0), 0);
+const totalTVLLabel = formatTotalTVL(totalTVLMillion);
+
 const TIME_FILTERS = ["1H", "24H", "7D", "30D"] as const;
 
 export function ScopeFilters() {
@@ -199,7 +207,7 @@ export function ScopeFilters() {
       <div className="p-3 border-t border-white/[0.06] space-y-2.5">
         <StatRow label="Protocols"  value={`${NODES.length}`}                                  color="#818cf8" />
         <StatRow label="Categories" value={`${Object.keys(CATEGORY_CONFIG).length}`}          color="#22d3ee" />
-        <StatRow label="Total TVL"  value="$200B+"                                            color="#34d399" />
+        <StatRow label="Total TVL"  value={totalTVLLabel}                                     color="#34d399" />
       </div>
     </aside>
   );

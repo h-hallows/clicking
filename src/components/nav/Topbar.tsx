@@ -5,6 +5,7 @@ import { Search, Menu } from "lucide-react";
 import { PriceData } from "@/app/api/prices/route";
 import { UserMenu } from "./UserMenu";
 import { NotificationsPanel } from "./NotificationsPanel";
+import { WalletConnectButton } from "@/components/wallet/WalletConnectModal";
 import { useSidebarStore } from "@/store/sidebar-store";
 
 interface TopbarProps {
@@ -127,6 +128,9 @@ export function Topbar({ title, subtitle }: TopbarProps) {
             ⌘K
           </kbd>
         </button>
+
+        {/* Wallet */}
+        <WalletConnectButton variant="compact" />
 
         {/* Notifications */}
         <NotificationsPanel />

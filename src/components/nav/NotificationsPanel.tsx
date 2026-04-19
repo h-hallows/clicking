@@ -89,7 +89,15 @@ export function NotificationsPanel() {
 
             {/* Alert list */}
             <div className="max-h-[340px] overflow-y-auto divide-y" style={{ borderColor: "#21262d" }}>
-              {alerts.map((alert) => {
+              {alerts.length === 0 ? (
+                <div className="flex flex-col items-center justify-center gap-2 px-4 py-8 text-center">
+                  <Bell size={20} className="text-[#30363d]" />
+                  <p className="text-[12px] font-semibold text-[#484f58]">No alerts yet</p>
+                  <p className="text-[11px] text-[#30363d] leading-snug max-w-[200px]">
+                    Set up watchlist alerts to get notified on price moves and TVL changes.
+                  </p>
+                </div>
+              ) : alerts.map((alert) => {
                 const cfg = TYPE_CONFIG[alert.type as keyof typeof TYPE_CONFIG] ?? TYPE_CONFIG.apy_spike;
                 const Icon = cfg.icon;
                 return (

@@ -33,7 +33,7 @@ export async function POST(req: Request) {
     async start(controller) {
       try {
         const anthropicStream = client.messages.stream({
-          model: "claude-opus-4-6",
+          model: "claude-opus-4-5",
           max_tokens: 64000,
           system: ATLAS_SYSTEM_PROMPT,
           messages: messages.map((m) => ({

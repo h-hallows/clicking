@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, useState } from "react";
 import {
   NODES, EDGES, CATEGORY_CONFIG, CLUSTER_POSITIONS,
   EcosystemNode, NodeCategory,
@@ -549,6 +549,8 @@ function roundRect(
 export function ScopeMap() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  // Track which side of the canvas the last selection happened (for panel placement)
+  const [panelSide, setPanelSide] = useState<"left" | "right">("right");
 
   const nodesRef = useRef<SimNode[]>([]);
   const edgesRef = useRef<SimEdge[]>([]);
@@ -811,6 +813,8 @@ export function ScopeMap() {
       const my = e.clientY - rect.top;
       const hit = findNode(mx, my);
       if (hit) {
+        // Place panel on the side with more space
+        setPanelSide(mx > rect.width * 0.55 ? "left" : "right");
         selectNode(stateRef.current.selectedNode === hit.id ? null : hit.id);
       } else {
         selectNode(null);
@@ -1025,7 +1029,7 @@ export function ScopeMap() {
 
       {/* Node panel */}
       {selectedNodeData && (
-        <NodePanel node={selectedNodeData} onClose={() => selectNode(null)} />
+        <NodePanel node={selectedNodeData} onClose={() => selectNode(null)} side={panelSide} />
       )}
     </div>
   );

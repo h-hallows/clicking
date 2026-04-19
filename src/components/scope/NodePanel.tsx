@@ -9,9 +9,10 @@ import { X, ExternalLink, ShieldCheck, TrendingUp, Layers, Flame, Globe, Bot, Za
 interface NodePanelProps {
   node: EcosystemNode;
   onClose: () => void;
+  side?: "left" | "right";
 }
 
-export function NodePanel({ node, onClose }: NodePanelProps) {
+export function NodePanel({ node, onClose, side = "right" }: NodePanelProps) {
   const { selectNode } = useScopeStore();
   const cfg = CATEGORY_CONFIG[node.category];
 
@@ -37,7 +38,7 @@ export function NodePanel({ node, onClose }: NodePanelProps) {
 
   return (
     <div
-      className="absolute top-4 right-4 w-76 rounded-xl border overflow-hidden shadow-2xl z-20 backdrop-blur-md"
+      className={`absolute top-4 rounded-xl border overflow-hidden shadow-2xl z-20 backdrop-blur-md ${side === "right" ? "right-4" : "left-4"}`}
       style={{
         borderColor: cfg.color + "35",
         background: "rgba(8, 7, 20, 0.92)",

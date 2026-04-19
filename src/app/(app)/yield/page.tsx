@@ -11,7 +11,9 @@ export default function YieldPage() {
       />
       <div className="flex-1 overflow-y-auto">
         <YieldPageClient />
-        <YieldDiscovery />
+        <div id="yield-pool-browser">
+          <YieldDiscovery />
+        </div>
       </div>
     </div>
   );
